@@ -21,6 +21,21 @@ function makeCube(size, color, position) {
 	return cube;
 }
 
+function getRandomInt(max) {
+	return Math.floor(Math.random()*max)
+}
+
+function getRandomReal(min, max) {
+	return Math.random()*(max - min) + min;
+}
+
+function getRandomColor() {
+	const red = getRandomInt(256);
+	const green = getRandomInt(256);
+	const blue = getRandomInt(256);
+	return `rgb(${red}, ${green}, ${blue})`;
+}
+
 function main() {
 	const canvas = document.getElementById('canvas');
   	const renderer = new THREE.WebGLRenderer({canvas});
@@ -29,11 +44,16 @@ function main() {
 
 	const scene = new THREE.Scene();
 
-	const cubes = [
-		makeCube(1.0, 0x44aa88, [-2, -2, 0]),
-		makeCube(2.0, 0x88aa44, [0, 0, 0]),
-		makeCube(1.5, 0xaa4488, [2, 2, 0])
-	];
+	const numOfCubes = 25;
+
+	let cubes = [];
+
+	for (let i = 0; i < numOfCubes; i++) {
+		const cubeSize = getRandomReal(0.05, 1.5);
+		const cubeColor = getRandomColor();		
+		const cubePos = [getRandomReal(-3.0, 3.0), getRandomReal(-3.0, 3.0), getRandomReal(-1.0, 1.0)];
+		cubes.push(makeCube(cubeSize, cubeColor, cubePos));
+	}	
 
 	for (const cube of cubes) {
 		scene.add(cube);
@@ -48,7 +68,7 @@ function main() {
   		time *= 0.001;  // convert time to seconds
  
  		cubes.forEach((cube, index) => {
- 			const speed = 1 + index * 0.1;
+ 			const speed = 1 + (index * 0.5)/numOfCubes;
     		const rot = time * speed;
  			cube.rotation.x = rot;
   			cube.rotation.y = rot;	
